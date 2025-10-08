@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,20 +42,29 @@ class _StartOrderScreenState extends State<StartOrderScreen> {
             TextField(
               controller: _noteController,
               decoration: const InputDecoration(
-                labelText: 'Order note (optional)',
+                labelText: 'Order note: (floor? number of people?)',
               ),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                final table = _tableController.text.trim();
+                String table = _tableController.text.trim();
+
+                // Auto-generate a 3-digit table number if empty
                 if (table.isEmpty) {
+                  final randomNum = Random().nextInt(900) + 100; // 100–999
+                  table = randomNum.toString();
+
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter a table number')),
+                    SnackBar(
+                      content: Text('Auto generated table number: $table'),
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 2),
+                    ),
                   );
-                  return;
                 }
 
+                // Start new order
                 context.read<OrderProvider>().startOrder(
                       table,
                       _noteController.text.trim(),
