@@ -97,7 +97,7 @@ class OrderReviewScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 // Ask user for number of copies
-                int copies = 1;
+                int copies = 2;
                 final controller =
                     TextEditingController(text: copies.toString());
                 final confirmed = await showDialog<bool>(
@@ -128,6 +128,18 @@ class OrderReviewScreen extends StatelessWidget {
                     items: items,
                     orderNote: orderProvider.note,
                     copies: numCopies,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Order printed successfully!'),
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.only(
+                                bottom: 80, // space above the button
+                                left: 16,
+                                right: 16,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
                   );
                   // After printing, clear current order
                   orderProvider.clear();
