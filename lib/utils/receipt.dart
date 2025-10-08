@@ -8,7 +8,7 @@ class ReceiptPrinter {
     required String tableNo,
     required List<OrderItem> items,
     String? orderNote,
-    int copies = 3,
+    int copies = 1,
   }) async {
     final doc = pw.Document();
 
@@ -26,19 +26,19 @@ class ReceiptPrinter {
         children: [
           pw.Text('** $header **',
               style: pw.TextStyle(
-                  fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                  fontSize: 30, fontWeight: pw.FontWeight.bold)),
           pw.Text('Table: $tableNo',
-              style: pw.TextStyle(fontSize: 12)),
+              style: pw.TextStyle(fontSize: 24)),
           if (orderNote != null && orderNote.isNotEmpty)
             pw.Text('Note: $orderNote',
-                style: pw.TextStyle(fontSize: 12)),
+                style: pw.TextStyle(fontSize: 24)),
           pw.SizedBox(height: 8),
           ...groups.entries.map((entry) => pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text(entry.key.toUpperCase(),
                       style: pw.TextStyle(
-                          fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                          fontWeight: pw.FontWeight.bold, fontSize: 24)),
                   ...entry.value.map((oi) => pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
@@ -49,15 +49,15 @@ class ReceiptPrinter {
                                 pw.Text(
                                     '${oi.quantity} x ${oi.item.name}',
                                     style:
-                                        pw.TextStyle(fontSize: 12)),
+                                        pw.TextStyle(fontSize: 24)),
                                 pw.Text(
                                     '£${(oi.item.pricePence * oi.quantity / 100).toStringAsFixed(2)}',
                                     style:
-                                        pw.TextStyle(fontSize: 12)),
+                                        pw.TextStyle(fontSize: 24)),
                               ]),
                           if (oi.note != null && oi.note!.isNotEmpty)
                             pw.Text('- ${oi.note}',
-                                style: pw.TextStyle(fontSize: 10)),
+                                style: pw.TextStyle(fontSize: 20)),
                         ],
                       )),
                   pw.SizedBox(height: 4),
@@ -69,10 +69,10 @@ class ReceiptPrinter {
               children: [
                 pw.Text('TOTAL',
                     style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                        fontWeight: pw.FontWeight.bold, fontSize: 24)),
                 pw.Text('£${(total / 100).toStringAsFixed(2)}',
                     style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                        fontWeight: pw.FontWeight.bold, fontSize: 24)),
               ]),
         ],
       );
