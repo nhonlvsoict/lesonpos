@@ -83,11 +83,11 @@ class ReceiptPrinter {
         build: (context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            buildSection('Customer'),
-            pw.SizedBox(height: 12),
-            buildSection('Bar'),
-            pw.SizedBox(height: 12),
-            buildSection('Kitchen'),
+            buildSection('Receipt'),
+            // pw.SizedBox(height: 12),
+            // buildSection('Bar'),
+            // pw.SizedBox(height: 12),
+            // buildSection('Kitchen'),
           ],
         ),
       ),

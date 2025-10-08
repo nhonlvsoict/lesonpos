@@ -97,7 +97,7 @@ class OrderReviewScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 // Ask user for number of copies
-                int copies = 3;
+                int copies = 2;
                 final controller =
                     TextEditingController(text: copies.toString());
                 final confirmed = await showDialog<bool>(
