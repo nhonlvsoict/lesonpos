@@ -1,0 +1,60 @@
+[
+      // ===== VIETNAMESE COFFEE =====
+        {"name": "Black Coffee (iced)", "category": "Vietnamese Coffee", "pricePence": 390},
+          {"name": "Coffee Latte",         "category": "Vietnamese Coffee", "pricePence": 450},
+            {"name": "Salted Coffee",        "category": "Vietnamese Coffee", "pricePence": 450},
+              {"name": "Egg Coffee (hot/iced)","category": "Vietnamese Coffee", "pricePence": 450},
+
+                // ===== MATCHA - TEA =====
+                  {"name": "Matcha Latte",         "category": "Matcha • Tea",      "pricePence": 450},
+                    {"name": "Coconut Matcha",       "category": "Matcha • Tea",      "pricePence": 450},
+                      {"name": "Green Lime Tea",       "category": "Matcha • Tea",      "pricePence": 450},
+                        {"name": "Bubble Tea (black milk with pearls)", "category": "Matcha • Tea", "pricePence": 450},
+
+                          // ===== SMOOTHIE =====
+                            {"name": "Banana Smoothie",      "category": "Smoothie",          "pricePence": 490},
+                              {"name": "Watermelon Smoothie",  "category": "Smoothie",          "pricePence": 490},
+                                {"name": "Orange Smoothie",      "category": "Smoothie",          "pricePence": 490},
+                                  {"name": "Pineapple Smoothie",   "category": "Smoothie",          "pricePence": 490},
+                                    {"name": "Apple Smoothie",       "category": "Smoothie",          "pricePence": 490},
+
+                                      // ===== BEER =====
+                                        {"name": "Hanoi Beer",           "category": "Beer",              "pricePence": 490},
+                                          {"name": "Saigon Beer",          "category": "Beer",              "pricePence": 490},
+
+                                            // ===== STARTERS =====
+                                              {"name": "Summer Rolls (2pcs) — Grilled Pork", "category": "Starters", "pricePence": 560},
+                                                {"name": "Summer Rolls (2pcs) — Prawn",        "category": "Starters", "pricePence": 560},
+                                                  {"name": "Summer Rolls (2pcs) — Tofu",         "category": "Starters", "pricePence": 560},
+                                                    {"name": "Special Rolls",                      "category": "Starters", "pricePence": 650},
+                                                      {"name": "Crispy Spring Rolls (2pcs)",         "category": "Starters", "pricePence": 560},
+
+                                                        // ===== NOODLE SOUP =====
+                                                          {"name": "Beef Pho",            "category": "Noodle Soup", "pricePence": 1250},
+                                                            {"name": "Hue Noodle",          "category": "Noodle Soup", "pricePence": 1250},
+
+                                                              // ===== SALAD NOODLE =====
+                                                                {"name": "Salad Noodle — Char Siu",            "category": "Salad Noodle", "pricePence": 1250},
+                                                                  {"name": "Salad Noodle — Crispy Pork Belly",   "category": "Salad Noodle", "pricePence": 1250},
+                                                                    {"name": "Salad Noodle — Grilled Pork",        "category": "Salad Noodle", "pricePence": 1250},
+                                                                      {"name": "Salad Noodle — Chicken",             "category": "Salad Noodle", "pricePence": 1250},
+                                                                        {"name": "Salad Noodle — Tofu",                "category": "Salad Noodle", "pricePence": 950},
+
+                                                                          // ===== BANH MI / BAGUETTE =====
+                                                                            {"name": "Banh Mi — Char Siu",                 "category": "Banh Mi / Baguette", "pricePence": 850},
+                                                                              {"name": "Banh Mi — Crispy Pork Belly",        "category": "Banh Mi / Baguette", "pricePence": 850},
+                                                                                {"name": "Banh Mi — Grilled Pork",             "category": "Banh Mi / Baguette", "pricePence": 850},
+                                                                                  {"name": "Banh Mi — Chicken",                  "category": "Banh Mi / Baguette", "pricePence": 850},
+                                                                                    {"name": "Banh Mi — Tofu",                     "category": "Banh Mi / Baguette", "pricePence": 790},
+                                                                                      {"name": "Banh Mi — Special",                  "category": "Banh Mi / Baguette", "pricePence": 1050},
+
+                                                                                        // ===== RICE / STICKY RICE =====
+                                                                                          {"name": "Rice/Sticky Rice — Char Siu",        "category": "Rice / Sticky Rice", "pricePence": 950},
+                                                                                            {"name": "Rice/Sticky Rice — Crispy Pork Belly","category": "Rice / Sticky Rice", "pricePence": 950},
+                                                                                              {"name": "Rice/Sticky Rice — Grilled Pork",    "category": "Rice / Sticky Rice", "pricePence": 950},
+                                                                                                {"name": "Rice/Sticky Rice — Chicken",         "category": "Rice / Sticky Rice", "pricePence": 950},
+                                                                                                  {"name": "Rice/Sticky Rice — Tofu",            "category": "Rice / Sticky Rice", "pricePence": 850},
+                                                                                                    {"name": "Rice/Sticky Rice — Special",         "category": "Rice / Sticky Rice", "pricePence": 1050}
+                                                                                                    ]
+                                                                                                    
+]

@@ -15,8 +15,7 @@ class _MenuCrudScreenState extends State<MenuCrudScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        context.read<MenuProvider>().load());
+    Future.microtask(() => context.read<MenuProvider>().load());
   }
 
   @override
@@ -25,33 +24,62 @@ class _MenuCrudScreenState extends State<MenuCrudScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menu Management'),
+        actions: [
+          IconButton(
+            tooltip: 'Import Seed Menu',
+            icon: const Icon(Icons.cloud_download),
+            onPressed: () async {
+              await menuProvider.importFromJson();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Menu imported from JSON'),
+                    behavior: SnackBarBehavior.floating,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: menuProvider.items.length,
-        itemBuilder: (context, index) {
-          final item = menuProvider.items[index];
-          return ListTile(
-            title: Text(item.name),
-            subtitle: Text(
-                '${item.category} • £${(item.pricePence / 100).toStringAsFixed(2)}'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      _showAddEditDialog(context, menuProvider, item);
-                    }),
-                IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      menuProvider.deleteItem(item);
-                    }),
-              ],
+      body: menuProvider.items.isEmpty
+          ? const Center(child: Text('No menu items found.'))
+          : ListView.builder(
+              itemCount: menuProvider.items.length,
+              itemBuilder: (context, index) {
+                final item = menuProvider.items[index];
+                return ListTile(
+                  title: Text(item.name),
+                  subtitle: Text(
+                      '${item.category} • £${(item.pricePence / 100).toStringAsFixed(2)}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          _showAddEditDialog(context, menuProvider, item);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          menuProvider.deleteItem(item);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${item.name} deleted'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
@@ -63,74 +91,76 @@ class _MenuCrudScreenState extends State<MenuCrudScreen> {
 
   void _showAddEditDialog(
       BuildContext context, MenuProvider provider, MenuItem? item) {
-    final nameController =
-        TextEditingController(text: item?.name ?? '');
+    final nameController = TextEditingController(text: item?.name ?? '');
     final categoryController =
         TextEditingController(text: item?.category ?? '');
-    final priceController =
-        TextEditingController(
-            text: item != null
-                ? (item.pricePence / 100).toStringAsFixed(2)
-                : '');
+    final priceController = TextEditingController(
+        text: item != null
+            ? (item.pricePence / 100).toStringAsFixed(2)
+            : '');
+
     showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            title:
-                Text(item == null ? 'Add Menu Item' : 'Edit Menu Item'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration:
-                      const InputDecoration(labelText: 'Name'),
-                ),
-                TextField(
-                  controller: categoryController,
-                  decoration:
-                      const InputDecoration(labelText: 'Category'),
-                ),
-                TextField(
-                  controller: priceController,
-                  decoration:
-                      const InputDecoration(labelText: 'Price (£)'),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('Cancel')),
-              ElevatedButton(
-                  onPressed: () async {
-                    final name = nameController.text.trim();
-                    final category =
-                        categoryController.text.trim();
-                    final priceDouble =
-                        double.tryParse(priceController.text) ?? 0.0;
-                    final pricePence = (priceDouble * 100).round();
-                    if (item == null) {
-                      await provider.addItem(MenuItem(
-                          name: name,
-                          category: category,
-                          pricePence: pricePence));
-                    } else {
-                      final updated = item.copyWith(
-                          name: name,
-                          category: category,
-                          pricePence: pricePence);
-                      await provider.updateItem(updated);
-                    }
-                    if (context.mounted) {
-                      Navigator.of(ctx).pop();
-                    }
-                  },
-                  child: const Text('Save')),
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(item == null ? 'Add Menu Item' : 'Edit Menu Item'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: categoryController,
+                decoration: const InputDecoration(labelText: 'Category'),
+              ),
+              TextField(
+                controller: priceController,
+                decoration: const InputDecoration(labelText: 'Price (£)'),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+              ),
             ],
-          );
-        });
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () async {
+                final name = nameController.text.trim();
+                final category = categoryController.text.trim();
+                final priceDouble =
+                    double.tryParse(priceController.text) ?? 0.0;
+                final pricePence = (priceDouble * 100).round();
+
+                if (name.isEmpty || category.isEmpty) return;
+
+                if (item == null) {
+                  await provider.addItem(MenuItem(
+                    name: name,
+                    category: category,
+                    pricePence: pricePence,
+                  ));
+                } else {
+                  final updated = item.copyWith(
+                    name: name,
+                    category: category,
+                    pricePence: pricePence,
+                  );
+                  await provider.updateItem(updated);
+                }
+
+                if (context.mounted) {
+                  Navigator.of(ctx).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
