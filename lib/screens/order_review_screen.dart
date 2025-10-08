@@ -103,7 +103,7 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
               onPressed: _isPrinting
                   ? null
                   : () async {
-                      int copies = 2;
+                      int copies = 1;
                       final controller =
                           TextEditingController(text: copies.toString());
                       final confirmed = await showDialog<bool>(
@@ -133,7 +133,7 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
                         setState(() => _isPrinting = true);
                         try {
                           final numCopies =
-                              int.tryParse(controller.text) ?? 2;
+                              int.tryParse(controller.text) ?? 1;
 
                           await ReceiptPrinter.printReceipt(
                             tableNo: orderProvider.tableNo ?? '',
