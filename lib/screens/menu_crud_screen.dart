@@ -25,22 +25,22 @@ class _MenuCrudScreenState extends State<MenuCrudScreen> {
       appBar: AppBar(
         title: const Text('Menu Management'),
         actions: [
-          IconButton(
-            tooltip: 'Import Seed Menu',
-            icon: const Icon(Icons.cloud_download),
-            onPressed: () async {
-              await menuProvider.importFromJson();
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Menu imported from JSON'),
-                    behavior: SnackBarBehavior.floating,
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
-          ),
+          // IconButton(
+          //   tooltip: 'Import Seed Menu',
+          //   icon: const Icon(Icons.cloud_download),
+          //   onPressed: () async {
+          //     await menuProvider.importFromJson();
+          //     if (context.mounted) {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         const SnackBar(
+          //           content: Text('Menu imported from JSON'),
+          //           behavior: SnackBarBehavior.floating,
+          //           duration: Duration(seconds: 2),
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
       body: menuProvider.items.isEmpty

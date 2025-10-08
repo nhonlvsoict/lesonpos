@@ -12,21 +12,26 @@ class MenuProvider extends ChangeNotifier {
 
   List<MenuItem> get items => _items;
 
-  /// Normal load — loads active items from DB
-  Future<void> load() async {
-    if (!_loaded) {
-      _items = await _database.getActiveItems();
+Future<void> load() async {
+  if (_loaded) return;
 
-      // Sort items by preferred category order then name
-      _items.sort((a, b) {
-        final c = _catRank(a.category).compareTo(_catRank(b.category));
-        return c != 0 ? c : a.name.compareTo(b.name);
-      });
+  // Load existing active items
+  _items = await _database.getActiveItems();
 
-      _loaded = true;
-      notifyListeners();
-    }
+  // If empty, import default menu from assets
+  if (_items.isEmpty) {
+    debugPrint('[MenuProvider] No menu items found. Importing seed JSON...');
+    await importFromJson();
+    _items = await _database.getActiveItems();
   }
+
+  // Sort the final list
+  _sortItems();
+
+  _loaded = true;
+  notifyListeners();
+}
+
 
   /// Add a single new menu item
   Future<void> addItem(MenuItem item) async {
