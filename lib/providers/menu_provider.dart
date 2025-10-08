@@ -110,11 +110,15 @@ Future<void> load() async {
     'Noodle Soup',
     'Salad Noodle',
     'Banh Mi / Baguette',
-    'Rice / Sticky Rice',
+    'Rice',
+    'Sticky Rice',
     'Vietnamese Coffee',
-    'Matcha • Tea',
+    'Matcha - Tea',
     'Smoothie',
     'Beer',
+    'Classic Coffee',
+    'Soft Drink',
+    'Dessert'
   ];
 
   static int _catRank(String c) {
