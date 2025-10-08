@@ -24,32 +24,34 @@ class _MenuScreenState extends State<MenuScreen> {
         context.read<MenuProvider>().load());
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final menuProvider = context.watch<MenuProvider>();
-    final items = menuProvider.items.where((item) {
-      final matchesCategory = _selectedCategory == null ||
-          item.category == _selectedCategory;
-      final matchesQuery = _query.isEmpty ||
-          item.name.toLowerCase().contains(_query.toLowerCase());
-      return matchesCategory && matchesQuery;
-    }).toList();
-    final categories =
-        menuProvider.items.map((e) => e.category).toSet().toList();
+@override
+Widget build(BuildContext context) {
+  final menuProvider = context.watch<MenuProvider>();
+  final orderProvider = context.watch<OrderProvider>(); // 👈 watch instead of read
+  final items = menuProvider.items.where((item) {
+    final matchesCategory = _selectedCategory == null ||
+        item.category == _selectedCategory;
+    final matchesQuery = _query.isEmpty ||
+        item.name.toLowerCase().contains(_query.toLowerCase());
+    return matchesCategory && matchesQuery;
+  }).toList();
+  final categories =
+      menuProvider.items.map((e) => e.category).toSet().toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Menu'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/menu-crud');
-            },
-          )
-        ],
-      ),
-      body: Padding(
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Menu'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () {
+            Navigator.of(context).pushNamed('/menu-crud');
+          },
+        )
+      ],
+    ),
+    body: SafeArea( // 👈 prevent overlap with system UI
+      child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
@@ -109,8 +111,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 child: const Text('Cancel')),
                             ElevatedButton(
                                 onPressed: () {
-                                  customNote =
-                                      noteController.text.trim();
+                                  customNote = noteController.text.trim();
                                   Navigator.of(ctx).pop(true);
                                 },
                                 child: const Text('Add')),
@@ -118,13 +119,21 @@ class _MenuScreenState extends State<MenuScreen> {
                         ),
                       );
                       if (result == true) {
-                        context
-                            .read<OrderProvider>()
-                            .addItem(item, customNote: customNote);
+                        orderProvider.addItem(item, customNote: customNote);
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content:
-                                  Text('${item.name} added to order')));
+                          // 👇 Use floating SnackBar so it doesn’t cover bottom button
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${item.name} added to order'),
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.only(
+                                bottom: 80, // space above the button
+                                left: 16,
+                                right: 16,
+                              ),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
                         }
                       }
                     },
@@ -133,7 +142,8 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: context.read<OrderProvider>().items.isEmpty
+              // 👇 watch() ensures this updates when order changes
+              onPressed: orderProvider.items.isEmpty
                   ? null
                   : () {
                       Navigator.of(context).pushNamed('/review');
@@ -143,6 +153,7 @@ class _MenuScreenState extends State<MenuScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
