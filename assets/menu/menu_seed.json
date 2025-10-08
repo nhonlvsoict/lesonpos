@@ -1,96 +1,96 @@
 [
   {
-    "name": "Black Coffee (iced/hot) - Cà phê đen (nóng/lạnh)",
+    "name": "Black Coffee (iced/hot) - Ca phe den (nong/lanh)",
     "category": "Vietnamese Coffee",
     "pricePence": 390
   },
   {
-    "name": "Coffee Latte - Cà phê sữa đá",
+    "name": "Coffee Latte - Ca phe sua da",
     "category": "Vietnamese Coffee",
     "pricePence": 450
   },
   {
-    "name": "Salted Coffee - Cà phê muối",
+    "name": "Salted Coffee - Ca phe muoi",
     "category": "Vietnamese Coffee",
     "pricePence": 450
   },
   {
-    "name": "Egg Coffee (hot/iced) - Cà phê trứng (nóng/lạnh)",
+    "name": "Egg Coffee (hot/iced) - Ca phe trung (nong/lanh)",
     "category": "Vietnamese Coffee",
     "pricePence": 450
   },
   {
-    "name": "Matcha Latte - Matcha sữa",
+    "name": "Matcha Latte - Matcha sua",
     "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
-    "name": "Coconut Matcha - Matcha dừa",
+    "name": "Coconut Matcha - Matcha dua",
     "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
-    "name": "+ strawberry (in Matcha) - thêm dâu tây (trong Matcha)",
+    "name": "+ strawberry (in Matcha) - them dau tay (trong Matcha)",
     "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
-    "name": "Green Lime Tea - Trà Thái Tắc",
+    "name": "Green Lime Tea - Tra Thai Tac",
     "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
-    "name": "Bubble Tea - Trà sữa trân châu",
+    "name": "Bubble Tea - Tra sua tran chau",
     "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
-    "name": "Banana Smoothie - Sinh tố chuối",
+    "name": "Banana Smoothie - Sinh to chuoi",
     "category": "Smoothie",
     "pricePence": 490
   },
   {
-    "name": "Watermelon Smoothie - Sinh tố dưa hấu",
+    "name": "Watermelon Smoothie - Sinh to dua hau",
     "category": "Smoothie",
     "pricePence": 490
   },
   {
-    "name": "Orange Smoothie - Sinh tố cam",
+    "name": "Orange Smoothie - Sinh to cam",
     "category": "Smoothie",
     "pricePence": 490
   },
   {
-    "name": "Pineapple Smoothie - Sinh tố thơm",
+    "name": "Pineapple Smoothie - Sinh to thom",
     "category": "Smoothie",
     "pricePence": 490
   },
   {
-    "name": "Apple Smoothie - Sinh tố táo",
+    "name": "Apple Smoothie - Sinh to tao",
     "category": "Smoothie",
     "pricePence": 490
   },
   {
-    "name": "Hanoi Beer - Bia Hà Nội",
+    "name": "Hanoi Beer - Bia Ha Noi",
     "category": "Beer",
     "pricePence": 490
   },
   {
-    "name": "Saigon Beer - Bia Sài Gòn",
+    "name": "Saigon Beer - Bia Sai Gon",
     "category": "Beer",
     "pricePence": 490
   },
   {
-    "name": "Singha Thai Beer - Bia Thái Lan Singha",
+    "name": "Singha Thai Beer - Bia Thai Lan Singha",
     "category": "Beer",
     "pricePence": 490
   },
   {
-    "name": "Diet Coke - Coca giảm đường",
+    "name": "Diet Coke - Coca giam duong",
     "category": "Soft Drink",
     "pricePence": 180
   },
   {
-    "name": "Coke Zero - Coca không đường",
+    "name": "Coke Zero - Coca khong duong",
     "category": "Soft Drink",
     "pricePence": 180
   },
@@ -100,52 +100,52 @@
     "pricePence": 180
   },
   {
-    "name": "Tonic Water - Nước có ga Tonic",
+    "name": "Tonic Water - Nuoc co ga Tonic",
     "category": "Soft Drink",
     "pricePence": 180
   },
   {
-    "name": "Fanta - Nước cam Fanta",
+    "name": "Fanta - Nuoc cam Fanta",
     "category": "Soft Drink",
     "pricePence": 180
   },
   {
-    "name": "Dr Pepper - Nước ngọt Dr Pepper",
+    "name": "Dr Pepper - Nuoc ngot Dr Pepper",
     "category": "Soft Drink",
     "pricePence": 180
   },
   {
-    "name": "Sprite - Nước chanh Sprite",
+    "name": "Sprite - Nuoc chanh Sprite",
     "category": "Soft Drink",
     "pricePence": 180
   },
   {
-    "name": "Watter Bottle - Nước suối",
+    "name": "Watter Bottle - Nuoc suoi",
     "category": "Soft Drink",
     "pricePence": 100
   },
   {
-    "name": "Appletiser Juice - Nước táo có ga",
+    "name": "Appletiser Juice - Nuoc tao co ga",
     "category": "Soft Drink",
     "pricePence": 280
   },
   {
-    "name": "Summer Rolls - Grilled Pork - Cuốn thịt nướng",
+    "name": "Summer Rolls - Grilled Pork - Cuon thit nuong",
     "category": "Starters",
     "pricePence": 560
   },
   {
-    "name": "Summer Rolls - Prawn - Cuốn tôm",
+    "name": "Summer Rolls - Prawn - Cuon tom",
     "category": "Starters",
     "pricePence": 560
   },
   {
-    "name": "Summer Rolls - Tofu - Cuốn đậu phụ",
+    "name": "Summer Rolls - Tofu - Cuon dau phu",
     "category": "Starters",
     "pricePence": 560
   },
   {
-    "name": "Summer Rolls - Special - Cuốn đặc biệt",
+    "name": "Summer Rolls - Special - Cuon dac biet",
     "category": "Starters",
     "pricePence": 650
   },
@@ -155,177 +155,177 @@
     "pricePence": 560
   },
   {
-    "name": "Beef Pho - Phở bò",
+    "name": "Beef Pho - Pho bo",
     "category": "Noodle Soup",
     "pricePence": 1250
   },
   {
-    "name": "Hue Noodle - Bún bò Huế",
+    "name": "Hue Noodle - Bun bo Hue",
     "category": "Noodle Soup",
     "pricePence": 1250
   },
   {
-    "name": "Crab Noodle - Bun Rieu - Bún riêu",
+    "name": "Crab Noodle - Bun Rieu - Bun rieu",
     "category": "Noodle Soup",
     "pricePence": 1390
   },
   {
-    "name": "Salad Noodle - Char Siu - Bún trộn xá xíu",
+    "name": "Salad Noodle - Char Siu - Bun tron xa xiu",
     "category": "Salad Noodle",
     "pricePence": 1250
   },
   {
-    "name": "Salad Noodle - Crispy Pork Belly - Bún trộn da giòn",
+    "name": "Salad Noodle - Crispy Pork Belly - Bun tron da gion",
     "category": "Salad Noodle",
     "pricePence": 1250
   },
   {
-    "name": "Salad Noodle - Grilled Pork - Bún trộn thịt nướng",
+    "name": "Salad Noodle - Grilled Pork - Bun tron thit nuong",
     "category": "Salad Noodle",
     "pricePence": 1250
   },
   {
-    "name": "Salad Noodle - Chicken - Bún trộn gà",
+    "name": "Salad Noodle - Chicken - Bun tron ga",
     "category": "Salad Noodle",
     "pricePence": 1250
   },
   {
-    "name": "Salad Noodle - Tofu - Bún trộn đậu phụ",
+    "name": "Salad Noodle - Tofu - Bun tron dau phu",
     "category": "Salad Noodle",
     "pricePence": 950
   },
   {
-    "name": "Banh Mi - Char Siu - Xá xíu",
+    "name": "Banh Mi - Char Siu - Xa xiu",
     "category": "Banh Mi / Baguette",
     "pricePence": 850
   },
   {
-    "name": "Banh Mi - Crispy Pork Belly - Da giòn",
+    "name": "Banh Mi - Crispy Pork Belly - Da gion",
     "category": "Banh Mi / Baguette",
     "pricePence": 850
   },
   {
-    "name": "Banh Mi - Grilled Pork - Thịt nướng",
+    "name": "Banh Mi - Grilled Pork - Thit nuong",
     "category": "Banh Mi / Baguette",
     "pricePence": 850
   },
   {
-    "name": "Banh Mi - Chicken - Gà",
+    "name": "Banh Mi - Chicken - Ga",
     "category": "Banh Mi / Baguette",
     "pricePence": 850
   },
   {
-    "name": "Banh Mi - Tofu - Đậu phụ",
+    "name": "Banh Mi - Tofu - Dau phu",
     "category": "Banh Mi / Baguette",
     "pricePence": 790
   },
   {
-    "name": "Banh Mi - Special - Đặc biệt",
+    "name": "Banh Mi - Special - Dac biet",
     "category": "Banh Mi / Baguette",
     "pricePence": 1050
   },
   {
-    "name": "Rice - Char Siu - Cơm xá xíu",
+    "name": "Rice - Char Siu - Com xa xiu",
     "category": "Rice",
     "pricePence": 950
   },
   {
-    "name": "Rice - Crispy Pork Belly - Cơm da giòn",
+    "name": "Rice - Crispy Pork Belly - Com da gion",
     "category": "Rice",
     "pricePence": 950
   },
   {
-    "name": "Rice - Grilled Pork - Cơm thịt nướng",
+    "name": "Rice - Grilled Pork - Com thit nuong",
     "category": "Rice",
     "pricePence": 950
   },
   {
-    "name": "Rice - Chicken - Cơm gà",
+    "name": "Rice - Chicken - Com ga",
     "category": "Rice",
     "pricePence": 950
   },
   {
-    "name": "Rice - Tofu - Cơm đậu hũ",
+    "name": "Rice - Tofu - Com dau hu",
     "category": "Rice",
     "pricePence": 850
   },
   {
-    "name": "Rice - Special - Cơm đặc biệt",
+    "name": "Rice - Special - Com dac biet",
     "category": "Rice",
     "pricePence": 1050
   },
   {
-    "name": "Sticky Rice - Char Siu - Xôi xá xíu",
+    "name": "Sticky Rice - Char Siu - Xoi xa xiu",
     "category": "Sticky Rice",
     "pricePence": 950
   },
   {
-    "name": "Sticky Rice - Crispy Pork Belly - Xôi da giòn",
+    "name": "Sticky Rice - Crispy Pork Belly - Xoi da gion",
     "category": "Sticky Rice",
     "pricePence": 950
   },
   {
-    "name": "Sticky Rice - Grilled Pork - Xôi thịt nướng",
+    "name": "Sticky Rice - Grilled Pork - Xoi thit nuong",
     "category": "Sticky Rice",
     "pricePence": 950
   },
   {
-    "name": "Sticky Rice - Chicken - Xôi gà",
+    "name": "Sticky Rice - Chicken - Xoi ga",
     "category": "Sticky Rice",
     "pricePence": 950
   },
   {
-    "name": "Sticky Rice - Tofu - Xôi đậu hũ",
+    "name": "Sticky Rice - Tofu - Xoi dau hu",
     "category": "Sticky Rice",
     "pricePence": 850
   },
   {
-    "name": "Sticky Rice - Special - Xôi đặc biệt",
+    "name": "Sticky Rice - Special - Xoi dac biet",
     "category": "Sticky Rice",
     "pricePence": 1050
   },
   {
-    "name": "Single Espresso - Cà phê espresso",
+    "name": "Single Espresso - Ca phe espresso",
     "category": "Classic Coffee",
     "pricePence": 180
   },
   {
-    "name": "Double Espresso - Cà phê espresso đôi",
+    "name": "Double Espresso - Ca phe espresso doi",
     "category": "Classic Coffee",
     "pricePence": 280
   },
   {
-    "name": "Macchiato - Cà phê macchiato",
+    "name": "Macchiato - Ca phe macchiato",
     "category": "Classic Coffee",
     "pricePence": 320
   },
   {
-    "name": "Flat White - Cà phê sữa Flat White",
+    "name": "Flat White - Ca phe sua Flat White",
     "category": "Classic Coffee",
     "pricePence": 380
   },
   {
-    "name": "Latte - Cà phê sữa Latte",
+    "name": "Latte - Ca phe sua Latte",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Cappuccino - Cà phê Cappuccino",
+    "name": "Cappuccino - Ca phe Cappuccino",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Mocha - Cà phê Mocha",
+    "name": "Mocha - Ca phe Mocha",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Hot Chocolate - Sô cô la nóng",
+    "name": "Hot Chocolate - So co la nong",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Sweet treats",
+    "name": "Sweet treats - Banh ngot 1d",
     "category": "Dessert",
     "pricePence": 100
   }
