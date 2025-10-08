@@ -30,12 +30,12 @@
     "pricePence": 450
   },
   {
-    "name": "+ strawberry (in Matcha) - them dau tay (trong Matcha)",
+    "name": "+ 1 strawberry (1 cup)",
     "category": "Matcha - Tea",
-    "pricePence": 450
+    "pricePence": 50
   },
   {
-    "name": "Green Lime Tea - Tra Thai Tac",
+    "name": "Green Lime Tea - Tra Thai tac",
     "category": "Matcha - Tea",
     "pricePence": 450
   },
@@ -285,42 +285,42 @@
     "pricePence": 1050
   },
   {
-    "name": "Single Espresso - Ca phe espresso",
+    "name": "Single Espresso",
     "category": "Classic Coffee",
     "pricePence": 180
   },
   {
-    "name": "Double Espresso - Ca phe espresso doi",
+    "name": "Double Espresso",
     "category": "Classic Coffee",
     "pricePence": 280
   },
   {
-    "name": "Macchiato - Ca phe macchiato",
+    "name": "Macchiato",
     "category": "Classic Coffee",
     "pricePence": 320
   },
   {
-    "name": "Flat White - Ca phe sua Flat White",
+    "name": "Flat White",
     "category": "Classic Coffee",
     "pricePence": 380
   },
   {
-    "name": "Latte - Ca phe sua Latte",
+    "name": "Latte",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Cappuccino - Ca phe Cappuccino",
+    "name": "Cappuccino",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Mocha - Ca phe Mocha",
+    "name": "Mocha",
     "category": "Classic Coffee",
     "pricePence": 450
   },
   {
-    "name": "Hot Chocolate - So co la nong",
+    "name": "Hot Chocolate",
     "category": "Classic Coffee",
     "pricePence": 450
   },
