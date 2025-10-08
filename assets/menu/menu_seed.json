@@ -21,22 +21,22 @@
   },
   {
     "name": "Matcha Latte",
-    "category": "Matcha • Tea",
+    "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
     "name": "Coconut Matcha",
-    "category": "Matcha • Tea",
+    "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
     "name": "Green Lime Tea",
-    "category": "Matcha • Tea",
+    "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
     "name": "Bubble Tea",
-    "category": "Matcha • Tea",
+    "category": "Matcha - Tea",
     "pricePence": 450
   },
   {
@@ -95,7 +95,7 @@
     "pricePence": 560
   },
   {
-    "name": " Summer Rolls - Speciasl (2pcs)",
+    "name": "Summer Rolls - Speciasl (2pcs)",
     "category": "Starters",
     "pricePence": 650
   },
@@ -115,7 +115,7 @@
     "pricePence": 1250
   },
   {
-    "name": "Crab Noodle - Bun rieu",
+    "name": "Crab Noodle - Bun Rieu",
     "category": "Noodle Soup",
     "pricePence": 1390
   },

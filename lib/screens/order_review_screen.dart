@@ -122,7 +122,7 @@ class OrderReviewScreen extends StatelessWidget {
                           ],
                         ));
                 if (confirmed == true) {
-                  final numCopies = int.tryParse(controller.text) ?? 3;
+                  final numCopies = int.tryParse(controller.text) ?? 2;
                   await ReceiptPrinter.printReceipt(
                     tableNo: orderProvider.tableNo ?? '',
                     items: items,

@@ -35,6 +35,7 @@ class _StartOrderScreenState extends State<StartOrderScreen> {
               decoration: const InputDecoration(
                 labelText: 'Table number',
               ),
+              keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 12),
             TextField(
@@ -49,15 +50,28 @@ class _StartOrderScreenState extends State<StartOrderScreen> {
                 final table = _tableController.text.trim();
                 if (table.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Please enter a table number')));
+                    const SnackBar(content: Text('Please enter a table number')),
+                  );
                   return;
                 }
+
                 context.read<OrderProvider>().startOrder(
                       table,
                       _noteController.text.trim(),
                     );
-                Navigator.of(context).pushNamed('/menu');
+
+                // Clear now so when user returns, fields are empty
+                _tableController.clear();
+                _noteController.clear();
+                FocusScope.of(context).unfocus();
+
+                // Navigate, and also clear again when route pops back
+                Navigator.of(context).pushNamed('/menu').then((_) {
+                  if (!mounted) return;
+                  _tableController.clear();
+                  _noteController.clear();
+                  setState(() {});
+                });
               },
               child: const Text('Start Order'),
             ),
