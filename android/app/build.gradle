@@ -19,8 +19,17 @@ android {
 
     buildTypes {
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
+        }
+    }
+
+    sourceSets {
+        main {
+            if (fileTree(dir: 'libs', include: ['*.aar']).isEmpty()) {
+                java.srcDir 'src/stub/kotlin'
+            }
         }
     }
 
@@ -35,5 +44,5 @@ android {
 }
 
 dependencies {
-    implementation files('libs/ePOS2-xxx.aar')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 }

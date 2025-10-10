@@ -11,13 +11,17 @@ existing Android system print dialog as a fallback.
    - Example: `android/app/libs/ePOS2-9.2.0.0.aar`.
 
 2. **Gradle configuration**
-   - Ensure `android/app/build.gradle` includes the Epson dependency:
+   - `android/app/build.gradle` already looks for any `.aar` or `.jar` dropped in
+     `android/app/libs/` via:
      ```gradle
      dependencies {
-         implementation files('libs/ePOS2-9.2.0.0.aar')
+         implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
      }
      ```
-   - Keep the filename in sync with the AAR you place in `android/app/libs/`.
+   - Simply copy the Epson ePOS2 AAR (for example `ePOS2-9.2.0.0.aar`) into that
+     folder. Without the SDK present, the Android build still succeeds by using
+     lightweight stubs, but direct printing will effectively be disabled until
+     the real library is provided.
 
 3. **Android Manifest**
    - Add the Epson networking permission to `android/app/src/main/AndroidManifest.xml`:
