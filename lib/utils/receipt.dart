@@ -5,6 +5,19 @@ import 'package:flutter/services.dart';
 import '../models/order_item.dart';
 import 'pos_printer.dart';
 
+class ReceiptPrintResult {
+  ReceiptPrintResult({
+    required this.payload,
+    required this.response,
+  });
+
+  final Map<String, dynamic> payload;
+  final Map<String, dynamic> response;
+
+  bool get ok => response['ok'] == true;
+  String? get error => response['error'] as String?;
+}
+
 class ReceiptPrinter {
   static Map<String, dynamic>? _profileCache;
 
@@ -122,7 +135,7 @@ class ReceiptPrinter {
     return payload;
   }
 
-  static Future<Map<String, dynamic>> printReceipt({
+  static Future<ReceiptPrintResult> printReceipt({
     required String tableNo,
     required List<OrderItem> items,
     String? orderNote,
@@ -134,6 +147,7 @@ class ReceiptPrinter {
       orderNote: orderNote,
       copies: copies,
     );
-    return PosPrinter.printReceipt(payload);
+    final response = await PosPrinter.printReceipt(payload);
+    return ReceiptPrintResult(payload: payload, response: response);
   }
 }

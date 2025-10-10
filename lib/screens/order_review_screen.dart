@@ -137,16 +137,15 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
                           final numCopies =
                               int.tryParse(controller.text) ?? 1;
 
-                          final payload =
-                              await ReceiptPrinter.buildReceiptPayload(
+                          final result = await ReceiptPrinter.printReceipt(
                             tableNo: orderProvider.tableNo ?? '',
                             items: items,
                             orderNote: orderProvider.note,
                             copies: numCopies,
                           );
+                          final payload = result.payload;
 
-                          final res = await PosPrinter.printReceipt(payload);
-                          if (res['ok'] == true) {
+                          if (result.ok) {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -175,18 +174,21 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
                               builder: (_) => AlertDialog(
                                 title: const Text('Print failed'),
                                 content:
-                                    Text(res['error'] ?? 'Unknown error'),
+                                    Text(result.error ?? 'Unknown error'),
                                 actions: [
                                   TextButton(
                                     onPressed: () async {
                                       try {
+                                        final pdfBytes =
+                                            await PosPrinter.buildPdfDoc(
+                                          payload,
+                                        );
                                         for (var i = 0;
                                             i < (payload['copies'] ?? 1);
                                             i++) {
                                           await Printing.layoutPdf(
                                             onLayout: (format) async =>
-                                                await PosPrinter.buildPdfDoc(
-                                                    payload),
+                                                pdfBytes,
                                           );
                                         }
                                         Navigator.pop(context, true);
