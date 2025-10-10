@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
 import '../models/order_item.dart';
 import '../providers/order_provider.dart';
+import '../utils/pos_printer.dart';
 import '../utils/receipt.dart';
 
 class OrderReviewScreen extends StatefulWidget {
@@ -135,34 +137,102 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
                           final numCopies =
                               int.tryParse(controller.text) ?? 1;
 
-                          await ReceiptPrinter.printReceipt(
+                          final payload =
+                              await ReceiptPrinter.buildReceiptPayload(
                             tableNo: orderProvider.tableNo ?? '',
                             items: items,
                             orderNote: orderProvider.note,
                             copies: numCopies,
                           );
 
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    const Text('Order printed successfully!'),
-                                behavior: SnackBarBehavior.floating,
-                                margin: const EdgeInsets.only(
-                                  bottom: 80,
-                                  left: 16,
-                                  right: 16,
+                          final res = await PosPrinter.printReceipt(payload);
+                          if (res['ok'] == true) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      const Text('Order printed successfully!'),
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: const EdgeInsets.only(
+                                    bottom: 80,
+                                    left: 16,
+                                    right: 16,
+                                  ),
+                                  duration: const Duration(seconds: 3),
                                 ),
-                                duration: const Duration(seconds: 3),
+                              );
+                            }
+
+                            orderProvider.clear();
+                            if (mounted) {
+                              Navigator.of(context).popUntil(
+                                  (route) => route.settings.name == '/');
+                            }
+                          } else {
+                            if (!mounted) return;
+                            final fallbackPrinted = await showDialog<bool>(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text('Print failed'),
+                                content:
+                                    Text(res['error'] ?? 'Unknown error'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      try {
+                                        for (var i = 0;
+                                            i < (payload['copies'] ?? 1);
+                                            i++) {
+                                          await Printing.layoutPdf(
+                                            onLayout: (format) async =>
+                                                await PosPrinter.buildPdfDoc(
+                                                    payload),
+                                          );
+                                        }
+                                        Navigator.pop(context, true);
+                                      } catch (e) {
+                                        Navigator.pop(context, false);
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  'System print failed: $e'),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    child: const Text('Use System Print'),
+                                  ),
+                                ],
                               ),
                             );
-                          }
 
-                          // clear order and go home
-                          orderProvider.clear();
-                          if (mounted) {
-                            Navigator.of(context).popUntil(
-                                (route) => route.settings.name == '/');
+                            if (fallbackPrinted == true) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                        'Order printed via system dialog.'),
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.only(
+                                      bottom: 80,
+                                      left: 16,
+                                      right: 16,
+                                    ),
+                                    duration: const Duration(seconds: 3),
+                                  ),
+                                );
+                              }
+                              orderProvider.clear();
+                              if (mounted) {
+                                Navigator.of(context).popUntil(
+                                    (route) => route.settings.name == '/');
+                              }
+                            }
                           }
                         } catch (e) {
                           if (mounted) {

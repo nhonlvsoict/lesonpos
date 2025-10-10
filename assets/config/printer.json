@@ -1,0 +1,27 @@
+{
+  "config": {
+    "target": "TCP:192.168.0.100",
+    "timeout": 10000,
+    "model": "TM_M30",
+    "lang": "MODEL_ANK"
+  },
+  "store": {
+    "name": "LeSon Restaurant",
+    "address": "95 Kirkgate, Leeds LS2 7DJ",
+    "phone": "+44 1234 567890"
+  },
+  "printOptions": {
+    "cutType": "CUT_FEED",
+    "openDrawer": false,
+    "printQr": {
+      "data": "",
+      "size": 6
+    },
+    "printBarcode": null
+  },
+  "footerLines": [
+    "Thank you!",
+    "Follow us @leson"
+  ],
+  "server": "Waiter"
+}

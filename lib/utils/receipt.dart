@@ -1,143 +1,139 @@
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 
 import '../models/order_item.dart';
+import 'pos_printer.dart';
 
 class ReceiptPrinter {
-  static Future<void> printReceipt({
+  static Map<String, dynamic>? _profileCache;
+
+  static Future<Map<String, dynamic>> _loadProfile() async {
+    if (_profileCache != null) {
+      return _profileCache!;
+    }
+    try {
+      final raw = await rootBundle.loadString('assets/config/printer.json');
+      final decoded = jsonDecode(raw);
+      if (decoded is Map<String, dynamic>) {
+        _profileCache = decoded;
+      } else {
+        _profileCache = {};
+      }
+    } catch (_) {
+      _profileCache = {};
+    }
+    return _profileCache!;
+  }
+
+  static Future<Map<String, dynamic>> buildReceiptPayload({
     required String tableNo,
     required List<OrderItem> items,
     String? orderNote,
     int copies = 1,
   }) async {
-    final doc = pw.Document();
+    final profile = await _loadProfile();
+    final sanitizedCopies = copies <= 0 ? 1 : copies;
+
+    final configDefaults = <String, dynamic>{
+      'target': 'TCP:192.168.0.100',
+      'timeout': 10000,
+      'model': 'TM_M30',
+      'lang': 'MODEL_ANK',
+    };
+    final configOverride =
+        (profile['config'] as Map?)?.cast<String, dynamic>() ?? {};
+    final config = {...configDefaults, ...configOverride};
+
+    final storeDefaults = <String, dynamic>{
+      'name': 'LeSon Restaurant',
+      'address': '95 Kirkgate, Leeds LS2 7DJ',
+      'phone': '+44 1234 567890',
+    };
+    final storeOverride =
+        (profile['store'] as Map?)?.cast<String, dynamic>() ?? {};
+    final store = {...storeDefaults, ...storeOverride};
+
+    final printOptionsDefaults = <String, dynamic>{
+      'cutType': 'CUT_FEED',
+      'openDrawer': false,
+      'printQr': null,
+      'printBarcode': null,
+    };
+    final printOptionsOverride =
+        (profile['printOptions'] as Map?)?.cast<String, dynamic>() ?? {};
+    final printOptions = {...printOptionsDefaults, ...printOptionsOverride};
+
     final now = DateTime.now();
-
-    final dateStr =
-        '${now.day.toString().padLeft(2, '0')}/'
-        '${now.month.toString().padLeft(2, '0')}/'
-        '${now.year} ${now.hour.toString().padLeft(2, '0')}:'
-        '${now.minute.toString().padLeft(2, '0')}';
-
-    pw.Widget _itemLine(OrderItem oi) {
-      final priceText =
-          '£${(oi.item.pricePence * oi.quantity / 100).toStringAsFixed(2)}';
-
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Expanded(
-                flex: 3,
-                child: pw.Text(
-                  '${oi.quantity} x ${oi.item.name}',
-                  style: const pw.TextStyle(fontSize: 28),
-                  softWrap: true,
-                ),
-              ),
-              pw.SizedBox(width: 8),
-              pw.Expanded(
-                flex: 1,
-                child: pw.Align(
-                  alignment: pw.Alignment.centerRight,
-                  child: pw.Text(
-                    priceText,
-                    style: const pw.TextStyle(fontSize: 28),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (oi.note != null && oi.note!.isNotEmpty)
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(top: 2),
-              child: pw.Text(
-                '- ${oi.note}',
-                style: const pw.TextStyle(fontSize: 26),
-                softWrap: true,
-              ),
-            ),
-        ],
-      );
-    }
-
-    pw.Widget _section({
-      required String header,
-      required List<OrderItem> items,
-      String? orderNote,
-      required int totalPence,
-    }) {
-      final groups = <String, List<OrderItem>>{};
-      for (final oi in items) {
-        final cat = oi.item.category;
-        groups.putIfAbsent(cat, () => []).add(oi);
-      }
-
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(
-            '** $header **',
-            style:
-                pw.TextStyle(fontSize: 32, fontWeight: pw.FontWeight.bold),
-          ),
-          pw.Text('Date: $dateStr', style: const pw.TextStyle(fontSize: 26)),
-          pw.Text('Table: $tableNo', style: const pw.TextStyle(fontSize: 28)),
-          if (orderNote != null && orderNote.isNotEmpty)
-            pw.Text('Note: $orderNote', style: const pw.TextStyle(fontSize: 28)),
-          pw.SizedBox(height: 8),
-          ...groups.entries.map((entry) => pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Text(entry.key.toUpperCase(),
-                      style: pw.TextStyle(
-                          fontWeight: pw.FontWeight.bold, fontSize: 28)),
-                  pw.SizedBox(height: 4),
-                  ...entry.value.map((oi) =>
-                      pw.Padding(padding: const pw.EdgeInsets.only(bottom: 6), child: _itemLine(oi))),
-                  pw.SizedBox(height: 4),
-                ],
-              )),
-          pw.Divider(),
-          pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-            children: [
-              pw.Text('TOTAL',
-                  style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold, fontSize: 30)),
-              pw.Text('£${(totalPence / 100).toStringAsFixed(2)}',
-                  style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold, fontSize: 30)),
-            ],
-          ),
-        ],
-      );
-    }
-
-    final total =
+    final orderId = 'ORD-${now.millisecondsSinceEpoch}';
+    final totalPence =
         items.fold<int>(0, (sum, oi) => sum + oi.item.pricePence * oi.quantity);
 
-    doc.addPage(
-      pw.MultiPage(
-        pageTheme: pw.PageTheme(
-          margin: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-        ),
-        build: (context) => [
-          _section(
-            header: 'Receipt',
-            items: items,
-            orderNote: orderNote,
-            totalPence: total,
-          ),
-        ],
-      ),
-    );
+    final groupedItems = items
+        .map((oi) => {
+              'category': oi.item.category,
+              'name': oi.item.name,
+              'qty': oi.quantity,
+              'unitPrice': oi.item.pricePence / 100,
+              'unitPricePence': oi.item.pricePence,
+              if (oi.note != null && oi.note!.isNotEmpty) 'note': oi.note,
+            })
+        .toList();
 
-    for (var i = 0; i < copies; i++) {
-      await Printing.layoutPdf(onLayout: (format) async => doc.save());
+    final qrConfig = printOptions['printQr'];
+    if (qrConfig is Map<String, dynamic> &&
+        (qrConfig['data'] == null ||
+            (qrConfig['data'] as String?)?.isEmpty == true)) {
+      qrConfig['data'] = 'https://leson.rest/ord/$orderId';
     }
+
+    final payload = <String, dynamic>{
+      'config': config,
+      'copies': sanitizedCopies,
+      'store': store,
+      'receipt': {
+        'orderId': orderId,
+        'table': tableNo,
+        'note': orderNote,
+        'server': profile['server'] ?? 'Waiter',
+        'createdAt': now.toUtc().toIso8601String(),
+        'currency': 'GBP',
+        'items': groupedItems,
+        'subTotal': totalPence / 100,
+        'subTotalPence': totalPence,
+        'discount': 0,
+        'serviceCharge': 0,
+        'tax': 0,
+        'total': totalPence / 100,
+        'totalPence': totalPence,
+        'footerLines': profile['footerLines'] ??
+            <String>['Thank you!', 'Follow us @leson'],
+      },
+      'printOptions': printOptions,
+    };
+
+    final barcodeConfig = printOptions['printBarcode'];
+    if (barcodeConfig is Map<String, dynamic> &&
+        (barcodeConfig['data'] == null ||
+            (barcodeConfig['data'] as String?)?.isEmpty == true)) {
+      barcodeConfig['data'] = orderId;
+    }
+
+    return payload;
+  }
+
+  static Future<Map<String, dynamic>> printReceipt({
+    required String tableNo,
+    required List<OrderItem> items,
+    String? orderNote,
+    int copies = 1,
+  }) async {
+    final payload = await buildReceiptPayload(
+      tableNo: tableNo,
+      items: items,
+      orderNote: orderNote,
+      copies: copies,
+    );
+    return PosPrinter.printReceipt(payload);
   }
 }
