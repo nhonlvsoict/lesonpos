@@ -131,6 +131,7 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
 
                       if (confirmed == true) {
                         setState(() => _isPrinting = true);
+                        var printedSuccessfully = false;
                         try {
                           final numCopies =
                               int.tryParse(controller.text) ?? 1;
@@ -141,28 +142,53 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
                             orderNote: orderProvider.note,
                             copies: numCopies,
                           );
-
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    const Text('Order printed successfully!'),
-                                behavior: SnackBarBehavior.floating,
-                                margin: const EdgeInsets.only(
-                                  bottom: 80,
-                                  left: 16,
-                                  right: 16,
+                          printedSuccessfully = true;
+                        } on DirectPrintException catch (e) {
+                          if (!mounted) return;
+                          final fallback = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Direct print failed'),
+                              content: Text(e.message),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(false),
+                                  child: const Text('Cancel'),
                                 ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          }
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(true),
+                                  child: const Text('Use Android Print'),
+                                ),
+                              ],
+                            ),
+                          );
 
-                          // clear order and go home
-                          orderProvider.clear();
-                          if (mounted) {
-                            Navigator.of(context).popUntil(
-                                (route) => route.settings.name == '/');
+                          if (fallback == true) {
+                            try {
+                              await e.fallback();
+                              printedSuccessfully = true;
+                            } catch (fallbackError) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Fallback printing failed: $fallbackError'),
+                                    behavior: SnackBarBehavior.floating,
+                                    duration: const Duration(seconds: 3),
+                                  ),
+                                );
+                              }
+                            }
+                          } else {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Printing cancelled: ${e.message}'),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: const Duration(seconds: 3),
+                                ),
+                              );
+                            }
                           }
                         } catch (e) {
                           if (mounted) {
@@ -174,7 +200,33 @@ class _OrderReviewScreenState extends State<OrderReviewScreen> {
                               ),
                             );
                           }
-                        } finally {
+                        }
+
+                        if (printedSuccessfully && mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  const Text('Order printed successfully!'),
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.only(
+                                bottom: 80,
+                                left: 16,
+                                right: 16,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
+
+                        if (printedSuccessfully) {
+                          // clear order and go home
+                          orderProvider.clear();
+                          if (mounted) {
+                            Navigator.of(context).popUntil(
+                                (route) => route.settings.name == '/');
+                          }
+                        }
+                      } finally {
                           if (mounted) setState(() => _isPrinting = false);
                         }
                       }

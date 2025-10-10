@@ -1,8 +1,10 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/order_provider.dart';
+import '../utils/receipt.dart';
 
 class StartOrderScreen extends StatefulWidget {
   const StartOrderScreen({super.key});
@@ -85,6 +87,33 @@ class _StartOrderScreenState extends State<StartOrderScreen> {
               },
               child: const Text('Start Order'),
             ),
+            if (kDebugMode) ...[
+              const SizedBox(height: 16),
+              OutlinedButton(
+                onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  try {
+                    await ReceiptPrinter.printTestReceipt();
+                    messenger.showSnackBar(
+                      const SnackBar(
+                        content: Text('Direct print test sent'),
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  } catch (e) {
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text('Direct print test failed: $e'),
+                        behavior: SnackBarBehavior.floating,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('Test Direct Print (EPOS)'),
+              ),
+            ],
           ],
         ),
       ),

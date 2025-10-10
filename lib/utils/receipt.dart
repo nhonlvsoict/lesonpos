@@ -2,7 +2,22 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../pos_printer.dart';
+import '../utils/printer_config.dart';
+
 import '../models/order_item.dart';
+
+typedef ReceiptFallbackPrinter = Future<void> Function();
+
+class DirectPrintException implements Exception {
+  DirectPrintException(this.message, this.fallback);
+
+  final String message;
+  final ReceiptFallbackPrinter fallback;
+
+  @override
+  String toString() => message;
+}
 
 class ReceiptPrinter {
   static Future<void> printReceipt({
@@ -136,8 +151,154 @@ class ReceiptPrinter {
       ),
     );
 
-    for (var i = 0; i < copies; i++) {
-      await Printing.layoutPdf(onLayout: (format) async => doc.save());
+    Future<void> pdfFallback() async {
+      for (var i = 0; i < copies; i++) {
+        await Printing.layoutPdf(onLayout: (format) async => doc.save());
+      }
     }
+
+    if (!shouldUseDirectEpos) {
+      await pdfFallback();
+      return;
+    }
+
+    final config = await PrinterConfig.load();
+    if (config == null) {
+      throw DirectPrintException(
+        'Printer configuration not found. Please check assets/config/printer.json.',
+        pdfFallback,
+      );
+    }
+
+    final payload = _buildDirectPayload(
+      config: config,
+      copies: copies,
+      tableNo: tableNo,
+      orderNote: orderNote,
+      items: items,
+      total: total,
+    );
+
+    final result = await PosPrinter.printReceipt(payload);
+    if (result['ok'] == true) {
+      return;
+    }
+
+    final errorMessage = result['error']?.toString() ?? 'Unknown printer error';
+    throw DirectPrintException(errorMessage, pdfFallback);
+  }
+
+  static Future<void> printTestReceipt() async {
+    if (!shouldUseDirectEpos) {
+      throw Exception(
+          'Direct ePOS printing is disabled. Run on Android with --dart-define=DIRECT_EPOS=true.');
+    }
+
+    final config = await PrinterConfig.load();
+    if (config == null) {
+      throw Exception(
+          'Printer configuration not found. Ensure assets/config/printer.json exists.');
+    }
+
+    final payload = {
+      'config': config.toMap(),
+      'copies': 1,
+      'store': {
+        'name': 'Test Print',
+        'address': '123 Sample Street',
+        'phone': '',
+        'logoBase64': null,
+      },
+      'receipt': {
+        'orderId': 'TEST',
+        'table': 'Debug',
+        'server': 'Dev',
+        'createdAt': DateTime.now().toUtc().toIso8601String(),
+        'currency': 'GBP',
+        'items': [
+          {
+            'category': 'Sample',
+            'name': 'Direct print check',
+            'qty': 1,
+            'unitPricePence': 100,
+            'note': null,
+          },
+        ],
+        'subTotal': 100,
+        'discount': 0,
+        'serviceCharge': 0,
+        'tax': 0,
+        'total': 100,
+        'footerLines': ['Direct print OK?'],
+        'note': null,
+      },
+      'printOptions': {
+        'cutType': 'CUT_FEED',
+        'openDrawer': false,
+        'printQr': null,
+        'printBarcode': null,
+      },
+    };
+
+    final response = await PosPrinter.printReceipt(payload);
+    if (response['ok'] == true) {
+      return;
+    }
+    throw Exception(response['error'] ?? 'Printer returned an unknown error');
+  }
+
+  static Map<String, dynamic> _buildDirectPayload({
+    required PrinterConfig config,
+    required int copies,
+    required String tableNo,
+    required String? orderNote,
+    required List<OrderItem> items,
+    required int total,
+  }) {
+    final createdAt = DateTime.now().toUtc().toIso8601String();
+    final groupedItems = items
+        .map((oi) => {
+              'category': oi.item.category,
+              'name': oi.item.name,
+              'qty': oi.quantity,
+              'unitPricePence': oi.item.pricePence,
+              'note': oi.note,
+            })
+        .toList(growable: false);
+
+    return {
+      'config': config.toMap(),
+      'copies': copies,
+      'store': {
+        'name': 'LeSon POS',
+        'address': '',
+        'phone': '',
+        'logoBase64': null,
+      },
+      'receipt': {
+        'orderId': '',
+        'table': tableNo,
+        'server': '',
+        'createdAt': createdAt,
+        'currency': 'GBP',
+        'items': groupedItems,
+        'subTotal': total,
+        'discount': 0,
+        'serviceCharge': 0,
+        'tax': 0,
+        'total': total,
+        'footerLines': [
+          'Thank you for dining with us!',
+          'Follow us @leson',
+        ],
+        'note': orderNote,
+      },
+      'printOptions': {
+        'cutType': 'CUT_FEED',
+        'openDrawer': false,
+        'printQr': null,
+        'printBarcode': null,
+      },
+    };
   }
 }
