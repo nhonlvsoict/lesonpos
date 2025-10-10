@@ -5,7 +5,6 @@
 
     <application
         android:label="lesonpos"
-        android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.leson.pos.MainActivity"
