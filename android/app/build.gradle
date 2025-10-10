@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
     id 'dev.flutter.flutter-gradle-plugin'
 }
 
@@ -25,22 +24,11 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            if (fileTree(dir: 'libs', include: ['*.aar']).isEmpty()) {
-                java.srcDir 'src/stub/kotlin'
-            }
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
