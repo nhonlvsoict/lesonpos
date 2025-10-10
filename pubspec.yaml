@@ -24,3 +24,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/menu/menu_seed.json
+    - assets/config/printer.json
