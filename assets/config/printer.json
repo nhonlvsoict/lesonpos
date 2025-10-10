@@ -1,6 +1,6 @@
 {
   "config": {
-    "target": "TCP:192.168.0.100",
+    "target": "TCP:192.168.1.105",
     "timeout": 10000,
     "model": "TM_M30",
     "lang": "MODEL_ANK"
@@ -20,8 +20,8 @@
     "printBarcode": null
   },
   "footerLines": [
-    "Thank you so much!",
-    "Follow us on Instagram: @lesonleeds"
+    "Thank you so much for your support!",
+    "Stay connected with us on Instagram: @lesonleeds"
   ],
   "server": "Waiter"
 }
