@@ -34,3 +34,19 @@ To verify the binaries are in place you can run the helper script:
 ```
 
 which checks the expected files and prints guidance if any are missing.
+
+## Building for 64-bit only devices
+
+Modern Pixel hardware (including the Pixel 8 Pro) ships as 64-bit only and
+refuses to install APKs that do not bundle `arm64-v8a` native libraries. The
+`android/app/build.gradle` configuration limits builds to `armeabi-v7a` and
+`arm64-v8a`, and the CI workflow pins `flutter build apk` to the matching target
+platforms. If you invoke `flutter build apk` manually, make sure to pass the same
+flag:
+
+```
+flutter build apk --target-platform android-arm,android-arm64
+```
+
+Without the flag Flutter may default to a 32-bit only build, which would prevent
+installation on 64-bit only devices.
