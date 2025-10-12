@@ -9,6 +9,8 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      USE_EPSON_DIRECT: ${{ vars.USE_EPSON_DIRECT || secrets.USE_EPSON_DIRECT || 'false' }}
 
     steps:
       - name: Checkout
@@ -28,7 +30,17 @@ jobs:
         run: flutter pub get
 
       - name: Build debug APK
-        run: flutter build apk 
+        env:
+          USE_EPSON_DIRECT: ${{ env.USE_EPSON_DIRECT }}
+        run: |
+          EXTRA_ARGS=""
+          if [[ "${USE_EPSON_DIRECT,,}" == "true" ]]; then
+            echo "Building with Epson direct printing enabled."
+            EXTRA_ARGS="--dart-define=USE_EPSON_DIRECT=true"
+          else
+            echo "Building without Epson direct printing."
+          fi
+          flutter build apk ${EXTRA_ARGS}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

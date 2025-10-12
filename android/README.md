@@ -23,6 +23,10 @@ dependencies {
 }
 ```
 
+If you need to use a different Kotlin toolchain version than the default, add a
+`kotlin.version` entry to `android/local.properties`. The build script falls
+back to `1.8.22` when the property is missing.
+
 To verify the binaries are in place you can run the helper script:
 
 ```
