@@ -1,6 +1,10 @@
-import java.util.Properties
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
+}
 
-def localProperties = new Properties()
+def localProperties = new java.util.Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withInputStream { stream ->
@@ -8,29 +12,19 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterSdkPath = localProperties.getProperty('flutter.sdk')
-if (flutterSdkPath == null) {
-    throw new GradleException('Flutter SDK not found. Define location with flutter.sdk in the local.properties file.')
-}
-
 def kotlinVersion = localProperties.getProperty('kotlin.version') ?: '1.8.22'
-
-apply from: "$flutterSdkPath/packages/flutter_tools/gradle/flutter.gradle"
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.example.lesonpos'
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     defaultConfig {
         applicationId 'com.example.lesonpos'
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        minSdk = 21
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutterVersionCode.toInteger()
+        versionName = flutterVersionName
     }
 
     buildTypes {
@@ -51,7 +45,7 @@ android {
 }
 
 flutter {
-    source '../..'
+    source = '../..'
 }
 
 dependencies {
