@@ -39,8 +39,7 @@ which checks the expected files and prints guidance if any are missing.
 
 Modern Pixel hardware (including the Pixel 8 Pro) ships as 64-bit only and
 refuses to install APKs that do not bundle `arm64-v8a` native libraries. The
-`android/app/build.gradle` configuration limits builds to `armeabi-v7a` and
-`arm64-v8a`, and the CI workflow now builds ABI-split artifacts so the
+CI workflow builds ABI-split artifacts so the
 `app-arm64-v8a-release.apk` always targets the 64-bit runtime. If you invoke
 `flutter build apk` manually, make sure to pass the same flags so the
 platform-specific APKs are generated locally:
