@@ -3,7 +3,8 @@
     "target": "TCP:192.168.1.105",
     "timeout": 10000,
     "model": "TM_M30",
-    "lang": "MODEL_ANK"
+    "lang": "MODEL_ANK",
+    "paperSize": "80mm"
   },
   "store": {
     "name": "LeSon Restaurant",
