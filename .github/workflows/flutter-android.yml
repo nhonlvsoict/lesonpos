@@ -9,6 +9,8 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      USE_EPSON_DIRECT: ${{ vars.USE_EPSON_DIRECT || secrets.USE_EPSON_DIRECT || 'false' }}
 
     steps:
       - name: Checkout
@@ -27,12 +29,25 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build debug APK
-        run: flutter build apk 
+      - name: Build release APKs
+        env:
+          USE_EPSON_DIRECT: ${{ env.USE_EPSON_DIRECT }}
+        run: |
+          EXTRA_ARGS=""
+          if [[ "${USE_EPSON_DIRECT,,}" == "true" ]]; then
+            echo "Building with Epson direct printing enabled."
+            EXTRA_ARGS="--dart-define=USE_EPSON_DIRECT=true"
+          else
+            echo "Building without Epson direct printing."
+          fi
+          flutter build apk \
+            --split-per-abi \
+            --target-platform android-arm,android-arm64 \
+            ${EXTRA_ARGS}
 
-      - name: Upload APK artifact
+      - name: Upload 64-bit APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: lesonpos-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: lesonpos-apk-arm64
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
           if-no-files-found: error
