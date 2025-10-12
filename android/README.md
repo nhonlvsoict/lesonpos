@@ -23,6 +23,10 @@ dependencies {
 }
 ```
 
+If you need to use a different Kotlin toolchain version than the default, add a
+`kotlin.version` entry to `android/local.properties`. The build script falls
+back to `1.8.22` when the property is missing.
+
 To verify the binaries are in place you can run the helper script:
 
 ```
@@ -30,3 +34,21 @@ To verify the binaries are in place you can run the helper script:
 ```
 
 which checks the expected files and prints guidance if any are missing.
+
+## Building for 64-bit only devices
+
+Modern Pixel hardware (including the Pixel 8 Pro) ships as 64-bit only and
+refuses to install APKs that do not bundle `arm64-v8a` native libraries. The
+CI workflow builds ABI-split artifacts so the
+`app-arm64-v8a-release.apk` always targets the 64-bit runtime. If you invoke
+`flutter build apk` manually, make sure to pass the same flags so the
+platform-specific APKs are generated locally:
+
+```
+flutter build apk --split-per-abi --target-platform android-arm,android-arm64
+```
+
+Without the split flag Flutter may default to a universal APK that only contains
+32-bit native binaries, which would prevent installation on 64-bit only devices.
+After the build finishes, install the `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`
+artifact on 64-bit only hardware such as the Pixel 8 Pro.

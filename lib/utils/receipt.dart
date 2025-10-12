@@ -53,6 +53,7 @@ class ReceiptPrinter {
       'timeout': 10000,
       'model': 'TM_M30',
       'lang': 'MODEL_ANK',
+      'paperSize': '80mm',
     };
     final configOverride =
         (profile['config'] as Map?)?.cast<String, dynamic>() ?? {};
