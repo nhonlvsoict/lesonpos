@@ -40,7 +40,7 @@ jobs:
           else
             echo "Building without Epson direct printing."
           fi
-          flutter build apk ${EXTRA_ARGS}
+          flutter build apk --target-platform android-arm,android-arm64 ${EXTRA_ARGS}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

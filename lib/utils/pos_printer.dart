@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
@@ -9,35 +11,107 @@ const bool kUseEpsonDirectPrint =
 
 class PosPrinter {
   static const _channel = MethodChannel('leson.pos/printer');
+  static const double _pointsPerMillimetre = 72.0 / 25.4;
+  static bool? _epsonPluginAvailability;
 
   static Future<Map<String, dynamic>> printReceipt(
       Map<String, dynamic> payload) async {
-    if (kUseEpsonDirectPrint) {
+    if (await _shouldUseDirectPrinting()) {
       try {
         final result = await _channel.invokeMethod('printDirect', payload);
         if (result is Map) {
           return result.cast<String, dynamic>();
         }
         return {'ok': false, 'error': 'Unexpected response'};
+      } on MissingPluginException catch (e) {
+        debugPrint('Epson direct plugin unexpectedly unavailable: $e');
+        _epsonPluginAvailability = false;
       } on PlatformException catch (e) {
         return {'ok': false, 'error': e.message};
       }
-    } else {
-      final copies = (payload['copies'] as int?) ?? 1;
-      for (var i = 0; i < copies; i++) {
-        await Printing.layoutPdf(
-            onLayout: (format) async => await _buildPdfDoc(payload));
-      }
-      return {'ok': true, 'copiesPrinted': copies};
     }
+
+    return _printWithPdfFallback(payload);
   }
 
   static Future<Uint8List> buildPdfDoc(Map<String, dynamic> payload) async {
     return _buildPdfDoc(payload);
   }
 
+  static Future<bool> _shouldUseDirectPrinting() async {
+    if (!kUseEpsonDirectPrint) {
+      return false;
+    }
+    if (kIsWeb) {
+      debugPrint('Epson direct printing not supported on web; using PDF.');
+      return false;
+    }
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      debugPrint(
+          'Epson direct printing only supported on Android; using PDF path.');
+      return false;
+    }
+
+    final cached = _epsonPluginAvailability;
+    if (cached != null) {
+      if (!cached) {
+        debugPrint(
+            'Epson direct plugin is not registered; using PDF printing path.');
+      }
+      return cached;
+    }
+
+    final available = await _queryEpsonDirectPluginPresence();
+    _epsonPluginAvailability = available;
+    if (!available) {
+      debugPrint(
+          'Epson direct plugin is not registered; using PDF printing path.');
+    }
+    return available;
+  }
+
+  static Future<bool> _queryEpsonDirectPluginPresence() async {
+    try {
+      final response = await _channel.invokeMethod<dynamic>('isAvailable');
+      if (response is bool) {
+        return response;
+      }
+      if (response is Map) {
+        final available = response['available'];
+        if (available is bool) {
+          return available;
+        }
+      }
+    } on MissingPluginException catch (e) {
+      debugPrint('Epson direct plugin missing: $e');
+      return false;
+    } on PlatformException catch (e) {
+      debugPrint('Failed to query Epson plugin availability: ${e.message}');
+      return false;
+    } catch (error) {
+      debugPrint('Unexpected Epson plugin availability error: $error');
+      return false;
+    }
+
+    return false;
+  }
+
+  static Future<Map<String, dynamic>> _printWithPdfFallback(
+      Map<String, dynamic> payload) async {
+    final copies = (payload['copies'] as int?) ?? 1;
+    for (var i = 0; i < copies; i++) {
+      await Printing.layoutPdf(
+          onLayout: (format) async => await _buildPdfDoc(payload));
+    }
+    return {'ok': true, 'copiesPrinted': copies};
+  }
+
   static Future<Uint8List> _buildPdfDoc(Map<String, dynamic> payload) async {
     final doc = pw.Document();
+
+    final config = (payload['config'] as Map?)?.cast<String, dynamic>() ?? {};
+    final paperSize = _parsePaperSize(config['paperSize']);
+    final pageFormat = _pageFormatForPaperSize(paperSize);
 
     final store = (payload['store'] as Map?)?.cast<String, dynamic>() ?? {};
     final receipt =
@@ -130,6 +204,7 @@ class PosPrinter {
     doc.addPage(
       pw.MultiPage(
         pageTheme: pw.PageTheme(
+          pageFormat: pageFormat,
           margin: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         ),
         build: (context) {
@@ -232,4 +307,49 @@ class PosPrinter {
 
     return doc.save();
   }
+
+  static PdfPageFormat _pageFormatForPaperSize(_PaperSize size) {
+    final widthMm = size == _PaperSize.mm58 ? 58.0 : 80.0;
+    final width = widthMm * _pointsPerMillimetre;
+    return PdfPageFormat(width, double.infinity);
+  }
+
+  static _PaperSize _parsePaperSize(dynamic raw) {
+    if (raw == null) {
+      return _PaperSize.mm80;
+    }
+    final text = raw.toString().trim();
+    if (text.isEmpty) {
+      return _PaperSize.mm80;
+    }
+    final upper = text.toUpperCase();
+    final digits = RegExp(r'\d+').allMatches(upper).map((match) => match.group(0)!).join();
+
+    if (digits == '57' || digits == '58') {
+      return _PaperSize.mm58;
+    }
+    if (digits == '79' || digits == '80') {
+      return _PaperSize.mm80;
+    }
+    if (upper.contains('2IN')) {
+      return _PaperSize.mm58;
+    }
+    if (upper.contains('3IN')) {
+      return _PaperSize.mm80;
+    }
+    if (upper.contains('58') || upper.contains('57')) {
+      return _PaperSize.mm58;
+    }
+    if (upper.contains('80') || upper.contains('79')) {
+      return _PaperSize.mm80;
+    }
+
+    debugPrint('Unknown printer paper size "$text", defaulting to 80mm');
+    return _PaperSize.mm80;
+  }
+}
+
+enum _PaperSize {
+  mm58,
+  mm80,
 }
