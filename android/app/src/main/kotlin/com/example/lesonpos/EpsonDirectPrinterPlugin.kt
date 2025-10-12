@@ -5,7 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.epson.epos2.Epos2Exception
-import com.epson.epos2.printer.CommonPrinter
 import com.epson.epos2.printer.Printer
 import com.epson.epos2.printer.PrinterStatusInfo
 import io.flutter.plugin.common.BinaryMessenger
@@ -38,7 +37,7 @@ class EpsonDirectPrinterPlugin private constructor(
     private fun handleIsAvailable(result: MethodChannel.Result) {
         executor.execute {
             val available = try {
-                Printer(Printer.TM_M30, CommonPrinter.MODEL_ANK, appContext).use { printer ->
+                Printer(Printer.TM_M30, Printer.MODEL_ANK, appContext).use { printer ->
                     printer.clearCommandBuffer()
                 }
                 true
@@ -83,7 +82,7 @@ class EpsonDirectPrinterPlugin private constructor(
             repeat(copies) {
                 printer.clearCommandBuffer()
                 buildReceipt(printer, payload, paperSize)
-                printer.sendData(CommonPrinter.PARAM_DEFAULT)
+                printer.sendData(Printer.PARAM_DEFAULT)
                 checkPrinterStatus(printer.status)?.let { message ->
                     throw PrinterStatusException(message)
                 }
@@ -148,14 +147,14 @@ class EpsonDirectPrinterPlugin private constructor(
         val orderId = receipt["orderId"]?.toString()?.ifBlank { null }
         val note = receipt["note"]?.toString()?.ifBlank { null }
 
-        printer.addTextAlign(CommonPrinter.ALIGN_CENTER)
+        printer.addTextAlign(Printer.ALIGN_CENTER)
         store["name"]?.toString()?.takeIf { it.isNotBlank() }?.let {
-            printer.addTextStyle(CommonPrinter.FALSE, CommonPrinter.FALSE, CommonPrinter.FONT_A, CommonPrinter.COLOR_1)
+            printer.addTextStyle(Printer.FALSE, Printer.FALSE, Printer.FONT_A, Printer.COLOR_1)
             printer.addTextSize(2, 2)
             printer.addText("$it\n")
         }
         printer.addTextSize(1, 1)
-        printer.addTextStyle(CommonPrinter.FALSE, CommonPrinter.FALSE, CommonPrinter.FONT_A, CommonPrinter.COLOR_1)
+        printer.addTextStyle(Printer.FALSE, Printer.FALSE, Printer.FONT_A, Printer.COLOR_1)
         store["address"]?.toString()?.takeIf { it.isNotBlank() }?.let {
             printer.addText("$it\n")
         }
@@ -164,7 +163,7 @@ class EpsonDirectPrinterPlugin private constructor(
         }
         printer.addFeedLine(1)
 
-        printer.addTextAlign(CommonPrinter.ALIGN_LEFT)
+        printer.addTextAlign(Printer.ALIGN_LEFT)
         createdAtLabel?.let { printer.addText("Date: $it\n") }
         table?.let { printer.addText("Table: $it\n") }
         orderId?.let { printer.addText("Order: $it\n") }
@@ -176,7 +175,7 @@ class EpsonDirectPrinterPlugin private constructor(
 
         val items = (receipt["items"] as? List<*>)?.mapNotNull { it as? Map<*, *> } ?: emptyList()
         if (items.isNotEmpty()) {
-            printer.addTextAlign(CommonPrinter.ALIGN_LEFT)
+            printer.addTextAlign(Printer.ALIGN_LEFT)
             for (item in items) {
                 val qty = max((item["qty"] as? Number)?.toInt() ?: 0, 0)
                 val name = item["name"]?.toString() ?: ""
@@ -196,7 +195,7 @@ class EpsonDirectPrinterPlugin private constructor(
             printer.addFeedLine(1)
         }
 
-        printer.addTextAlign(CommonPrinter.ALIGN_RIGHT)
+        printer.addTextAlign(Printer.ALIGN_RIGHT)
         val subTotal = ((receipt["subTotalPence"] as? Number)?.toInt())
             ?: ((receipt["subTotal"] as? Number)?.toDouble()?.times(100))?.toInt()
         subTotal?.let {
@@ -220,16 +219,16 @@ class EpsonDirectPrinterPlugin private constructor(
         val total = ((receipt["totalPence"] as? Number)?.toInt())
             ?: ((receipt["total"] as? Number)?.toDouble()?.times(100))?.toInt()
         total?.let {
-            printer.addTextStyle(CommonPrinter.FALSE, CommonPrinter.FALSE, CommonPrinter.FONT_B, CommonPrinter.COLOR_1)
+            printer.addTextStyle(Printer.FALSE, Printer.FALSE, Printer.FONT_B, Printer.COLOR_1)
             printer.addText("TOTAL: ${currencyFormatter.format(it / 100.0)}\n")
-            printer.addTextStyle(CommonPrinter.FALSE, CommonPrinter.FALSE, CommonPrinter.FONT_A, CommonPrinter.COLOR_1)
+            printer.addTextStyle(Printer.FALSE, Printer.FALSE, Printer.FONT_A, Printer.COLOR_1)
         }
         printer.addFeedLine(1)
 
         handleBarcode(printer, printOptions["printBarcode"])
         handleQr(printer, printOptions["printQr"])
 
-        printer.addTextAlign(CommonPrinter.ALIGN_CENTER)
+        printer.addTextAlign(Printer.ALIGN_CENTER)
         if (footerLines.isNotEmpty()) {
             for (line in footerLines) {
                 printer.addText("$line\n")
@@ -239,7 +238,7 @@ class EpsonDirectPrinterPlugin private constructor(
 
         val openDrawer = (printOptions["openDrawer"] as? Boolean) == true
         if (openDrawer) {
-            printer.addPulse(CommonPrinter.DRAWER_2PIN, CommonPrinter.PULSE_100)
+            printer.addPulse(Printer.DRAWER_2PIN, Printer.PULSE_100)
         }
 
         val cutType = printOptions["cutType"]?.toString()?.uppercase(Locale.US) ?: DEFAULT_CUT
@@ -253,11 +252,11 @@ class EpsonDirectPrinterPlugin private constructor(
         try {
             printer.addSymbol(
                 data,
-                CommonPrinter.SYMBOL_QRCODE_MODEL_2,
-                CommonPrinter.LEVEL_M,
+                Printer.SYMBOL_QRCODE_MODEL_2,
+                Printer.LEVEL_M,
                 size,
                 size,
-                CommonPrinter.PARAM_DEFAULT,
+                Printer.PARAM_DEFAULT,
             )
             printer.addFeedLine(1)
         } catch (error: Epos2Exception) {
@@ -273,9 +272,9 @@ class EpsonDirectPrinterPlugin private constructor(
         try {
             printer.addBarcode(
                 data,
-                CommonPrinter.BARCODE_CODE128,
-                CommonPrinter.HRI_BELOW,
-                CommonPrinter.FONT_A,
+                Printer.BARCODE_CODE128,
+                Printer.HRI_BELOW,
+                Printer.FONT_A,
                 width,
                 height,
             )
@@ -290,11 +289,11 @@ class EpsonDirectPrinterPlugin private constructor(
     }
 
     private fun resolveLang(name: String): Int {
-        return findStaticField(CommonPrinter::class.java, name) ?: CommonPrinter.MODEL_ANK
+        return findStaticField(Printer::class.java, name) ?: Printer.MODEL_ANK
     }
 
     private fun resolveCutType(name: String): Int {
-        return findStaticField(CommonPrinter::class.java, name) ?: CommonPrinter.CUT_FEED
+        return findStaticField(Printer::class.java, name) ?: Printer.CUT_FEED
     }
 
     private fun findStaticField(clazz: Class<*>, name: String): Int? {
@@ -327,19 +326,19 @@ class EpsonDirectPrinterPlugin private constructor(
     }
 
     private fun checkPrinterStatus(status: PrinterStatusInfo): String? {
-        if (status.online == CommonPrinter.FALSE) {
+        if (status.online == Printer.FALSE) {
             return "Printer is offline"
         }
-        if (status.connection == CommonPrinter.FALSE) {
+        if (status.connection == Printer.FALSE) {
             return "Printer is not connected"
         }
-        if (status.coverOpen == CommonPrinter.TRUE) {
+        if (status.coverOpen == Printer.TRUE) {
             return "Printer cover is open"
         }
-        if (status.paper == CommonPrinter.PAPER_EMPTY) {
+        if (status.paper == Printer.PAPER_EMPTY) {
             return "Printer is out of paper"
         }
-        if (status.paper == CommonPrinter.PAPER_NEAR_END) {
+        if (status.paper == Printer.PAPER_NEAR_END) {
             return "Printer paper is near end"
         }
         if (status.errorStatus != 0) {
