@@ -319,8 +319,9 @@ class EpsonDirectPrinterPlugin private constructor(
             Epos2Exception.ERR_BOX_COUNT_OVER -> "Too many print jobs queued"
             Epos2Exception.ERR_BOX_CLIENT_OVER -> "Printer client limit exceeded"
             Epos2Exception.ERR_UNSUPPORTED -> "Printer command unsupported"
+            Epos2Exception.ERR_RECOVERY_FAILURE -> "Printer recovery failure"
+            Epos2Exception.ERR_TYPE_INVALID -> "Invalid printer type configured"
             Epos2Exception.ERR_FAILURE -> "Printer reported failure"
-            Epos2Exception.ERR_SEQUENCE -> "Printer command sequence error"
             else -> "Printer error ${error.errorStatus}"
         }
     }
