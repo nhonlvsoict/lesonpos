@@ -9,6 +9,8 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      USE_EPSON_DIRECT: ${{ vars.USE_EPSON_DIRECT || secrets.USE_EPSON_DIRECT || 'true' }}
 
     steps:
       - name: Checkout
@@ -27,8 +29,16 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
+      - name: Validate Epson direct print flag
+        run: |
+          echo "USE_EPSON_DIRECT=${USE_EPSON_DIRECT}"
+          if [ -z "${USE_EPSON_DIRECT}" ]; then
+            echo "::error::USE_EPSON_DIRECT must be provided via repository variables or secrets."
+            exit 1
+          fi
+
       - name: Build debug APK
-        run: flutter build apk 
+        run: flutter build apk --dart-define=USE_EPSON_DIRECT=${USE_EPSON_DIRECT}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
