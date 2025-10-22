@@ -325,8 +325,23 @@
     "pricePence": 450
   },
   {
+    "name": "British Tea",
+    "category": "Classic Coffee",
+    "pricePence": 280
+  },
+  {
+    "name": "Thai Green Tea",
+    "category": "Classic Coffee",
+    "pricePence": 180
+  },
+  {
     "name": "Sweet treats - Banh ngot 1d",
     "category": "Dessert",
     "pricePence": 100
+  },
+  {
+    "name": "Tap Water",
+    "category": "Others",
+    "pricePence": 0
   }
 ]
