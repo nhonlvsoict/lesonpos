@@ -300,6 +300,11 @@
     "pricePence": 320
   },
   {
+    "name": "Americano",
+    "category": "Classic Coffee",
+    "pricePence": 380
+  },
+  {
     "name": "Flat White",
     "category": "Classic Coffee",
     "pricePence": 380
@@ -325,12 +330,12 @@
     "pricePence": 450
   },
   {
-    "name": "British Tea",
+    "name": "British Tea  (Tea Bag)",
     "category": "Classic Coffee",
     "pricePence": 280
   },
   {
-    "name": "Thai Green Tea",
+    "name": "Thai Green Tea (Tea Bag)",
     "category": "Classic Coffee",
     "pricePence": 180
   },
